@@ -18,11 +18,17 @@ class FeedPost(db.Document):
     timestamp = db.DateTimeField()
 
 
-# Todo: add userId to header
 @app.route("/feed/<user_id>", methods=['GET'])
 def index(user_id):
-    entries = FeedPost.objects(userId=user_id)
-    return jsonify(entries), 200
+    entries = FeedPost.objects(userId=user_id).order_by('-timestamp')
+    response_entries = []
+    for entry in entries:
+        response_entries.append({
+            "userId": entry.userId,
+            "contentReference": entry.contentReference,
+            "createdOn": entry.timestamp.isoformat()
+        })
+    return jsonify(response_entries), 200
 
 
 @app.route("/redact/relay", methods=['POST'])
@@ -32,7 +38,7 @@ def redact_relay():
         contentReference=request.json['path'],
         timestamp=datetime.datetime.now())
     )
-    return
+    return {}, 200
 
 
 if __name__ == "__main__":
