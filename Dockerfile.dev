@@ -1,0 +1,10 @@
+FROM python:3.10.0b2-alpine3.13 AS builder
+ADD requirements.txt requirements.txt
+ADD config.json config.json
+COPY src/ src/
+RUN pip install -r requirements.txt
+
+ARG FLASK_ENV='development'
+ARG FLASK_DEBUG='true'
+
+ENTRYPOINT ["python","src/server.py"]
