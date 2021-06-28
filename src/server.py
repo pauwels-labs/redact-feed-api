@@ -12,7 +12,6 @@ app.config['MONGODB_SETTINGS'] = {
     'host': os.getenv('MONGODB_HOST'),
     'port': int(os.getenv('MONGODB_PORT'))
 }
-app.config.from_file("../config.json", load=json.load)
 db = MongoEngine()
 db.init_app(app)
 
