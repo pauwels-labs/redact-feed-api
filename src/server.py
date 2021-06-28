@@ -4,15 +4,21 @@ import datetime
 import json
 from flask import Flask, request, jsonify
 from flask_mongoengine import MongoEngine
+import os
 
 app = Flask(__name__)
+app.config['MONGODB_SETTINGS'] = {
+    'db': os.getenv('MONGODB_DB'),
+    'host': os.getenv('MONGODB_HOST'),
+    'port': int(os.getenv('MONGODB_PORT'))
+}
 app.config.from_file("../config.json", load=json.load)
 db = MongoEngine()
 db.init_app(app)
 
 
 class FeedPost(db.Document):
-    meta = {'collection': app.config.get("DB_COLLECTION_NAME_FEED_POST")}
+    meta = {'collection': os.getenv('DB_COLLECTION_NAME_FEED_POST')}
     userId = db.StringField()
     contentReference = db.StringField()
     timestamp = db.DateTimeField()
