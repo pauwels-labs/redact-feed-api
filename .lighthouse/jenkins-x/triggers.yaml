@@ -1,0 +1,26 @@
+apiVersion: config.lighthouse.jenkins-x.io/v1alpha1
+kind: TriggerConfig
+spec:
+  presubmits:
+#    - name: unit-test
+#      context: "unit-test"
+#      always_run: true
+#      optional: false
+#      source: "unit-test.yaml"
+    - name: build-alpine
+      context: "build-alpine"
+      always_run: true
+      optional: false
+      source: "build-alpine.yaml"
+    - name: build-prod
+      context: "build-prod"
+      always_run: true
+      optional: false
+      source: "build-prod.yaml"
+  postsubmits:
+    - name: release
+      context: "release"
+      source: "release.yaml"
+      branches:
+        - ^main$
+        - ^master$
