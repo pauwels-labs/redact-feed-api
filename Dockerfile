@@ -6,5 +6,5 @@ RUN pip install -r requirements.txt
 
 ARG FLASK_ENV='production'
 ARG FLASK_DEBUG='false'
-
+EXPOSE 8080
 ENTRYPOINT ["python","src/server.py"]
