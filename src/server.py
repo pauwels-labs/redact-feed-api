@@ -45,7 +45,7 @@ def redact_relay():
         contentReference=request.json['path'],
         timestamp=datetime.datetime.now())
     )
-    return {cert}, 200
+    return {cert: cert}, 200
 
 
 if __name__ == "__main__":
