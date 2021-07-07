@@ -38,12 +38,14 @@ def index(user_id):
 
 @app.route("/redact/relay", methods=['POST'])
 def redact_relay():
+    cert = request.headers.get("ssl-client-cert")
+
     FeedPost.objects.insert(FeedPost(
         userId=request.json['userId'],
         contentReference=request.json['path'],
         timestamp=datetime.datetime.now())
     )
-    return {}, 200
+    return {cert}, 200
 
 
 if __name__ == "__main__":
