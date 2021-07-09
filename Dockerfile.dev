@@ -1,6 +1,9 @@
 FROM python:3.10.0b2-alpine3.13 AS builder
 ADD requirements.txt requirements.txt
 COPY src/ src/
+
+RUN apk update && apk add gcc musl-dev python3-dev libffi-dev openssl-dev cargo
+
 RUN pip install -r requirements.txt
 
 ARG FLASK_ENV='development'
