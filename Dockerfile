@@ -6,8 +6,8 @@ RUN apk update && apk add gcc musl-dev python3-dev libffi-dev openssl-dev cargo
 
 RUN pip install --upgrade pip \
     pip install -r requirements.txt
-    
+
 ARG FLASK_ENV='production'
 ARG FLASK_DEBUG='false'
 EXPOSE 8080
-ENTRYPOINT ["python","src/server.py"]
+ENTRYPOINT ["python","-u","src/server.py"]
