@@ -29,6 +29,7 @@ class FeedPost(db.Document):
 def index():
     user_cert = request.headers.get("X-Client-Cert")
     if user_cert:
+        print(user_cert)
         cert_object = crypto.load_certificate(crypto.FILETYPE_PEM, user_cert)
         pub_key_object = cert_object.get_pubkey()
         pub_key_string = crypto.dump_publickey(crypto.FILETYPE_PEM, pub_key_object)
