@@ -81,6 +81,7 @@ def redact_session_create():
     if not user_cert:
         return {}, 401
 
+    print(user_cert)
     formatted_output = user_cert.replace('\\n', '\n').replace('\\t', '\t')
     crtObj = crypto.load_certificate(crypto.FILETYPE_PEM, formatted_output)
     pubKeyObject = crtObj.get_pubkey()
