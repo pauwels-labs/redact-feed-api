@@ -11,6 +11,7 @@ import os
 from OpenSSL import crypto
 from hashlib import sha256
 from flask_socketio import SocketIO
+import urllib.parse
 
 app = Flask(__name__)
 app.config['MONGODB_SETTINGS'] = {
@@ -83,6 +84,9 @@ def redact_session_create():
 
     print(user_cert)
     formatted_output = user_cert.replace('\\n', '\n').replace('\\t', '\t')
+    formatted_output = urllib.parse.unquote(formatted_output)
+    print(formatted_output)
+
     crtObj = crypto.load_certificate(crypto.FILETYPE_PEM, formatted_output)
     pubKeyObject = crtObj.get_pubkey()
     pubKeyString = crypto.dump_publickey(crypto.FILETYPE_PEM, pubKeyObject)
@@ -101,7 +105,7 @@ def redact_session_create():
             algorithm='HS256'
         )
 
-        return {auth_token}, 200
+        return {"auth_token": auth_token}, 200
     except Exception as e:
         print(e)
         return {}, 500
