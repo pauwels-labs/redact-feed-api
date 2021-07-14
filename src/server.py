@@ -36,9 +36,7 @@ class FeedPost(db.Document):
 
 @app.route("/feed", methods=['GET'])
 def index():
-    # TODO: make work
     auth_token = request.headers.get("Authorization")
-    # if not auth_token or not auth_token.get('user_id'):
     if not auth_token:
         return {}, 401
 
@@ -88,8 +86,7 @@ def redact_relay():
         timestamp=datetime.datetime.now())
     )
 
-    # TODO: check result
-    # TODO: make work
+    # TODO
     # socketio.send({"path": request.json['path']}).to(auth_token.get("user_id"))
     return {}, 200
 
@@ -129,5 +126,3 @@ def redact_session_create():
 
 if __name__ == "__main__":
     socketio.run(app, host='0.0.0.0', port='8080')
-
-# app.run(host='0.0.0.0', port='8080')
