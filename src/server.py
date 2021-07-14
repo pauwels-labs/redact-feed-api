@@ -59,7 +59,9 @@ def redact_relay():
     if not user_cert:
         return {}, 401
 
-    crtObj = crypto.load_certificate(crypto.FILETYPE_PEM, user_cert)
+    formatted_cert = user_cert.replace('\\n', '\n').replace('\\t', '\t')
+    formatted_cert = urllib.parse.unquote(formatted_cert)
+    crtObj = crypto.load_certificate(crypto.FILETYPE_PEM, formatted_cert)
     pubKeyObject = crtObj.get_pubkey()
     pubKeyString = crypto.dump_publickey(crypto.FILETYPE_PEM, pubKeyObject)
     userId = sha256(pubKeyString).hexdigest()
@@ -82,12 +84,10 @@ def redact_session_create():
     if not user_cert:
         return {}, 401
 
-    print(user_cert)
-    formatted_output = user_cert.replace('\\n', '\n').replace('\\t', '\t')
-    formatted_output = urllib.parse.unquote(formatted_output)
-    print(formatted_output)
+    formatted_cert = user_cert.replace('\\n', '\n').replace('\\t', '\t')
+    formatted_cert = urllib.parse.unquote(formatted_cert)
 
-    crtObj = crypto.load_certificate(crypto.FILETYPE_PEM, formatted_output)
+    crtObj = crypto.load_certificate(crypto.FILETYPE_PEM, formatted_cert)
     pubKeyObject = crtObj.get_pubkey()
     pubKeyString = crypto.dump_publickey(crypto.FILETYPE_PEM, pubKeyObject)
     user_id = sha256(pubKeyString).hexdigest()
@@ -107,7 +107,7 @@ def redact_session_create():
 
         return {"auth_token": auth_token}, 200
     except Exception as e:
-        print(e)
+        # TODO: log error
         return {}, 500
 
 
