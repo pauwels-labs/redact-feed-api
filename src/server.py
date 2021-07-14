@@ -13,6 +13,8 @@ from hashlib import sha256
 from flask_socketio import SocketIO
 import urllib.parse
 
+from jwt import ExpiredSignatureError
+
 app = Flask(__name__)
 app.config['MONGODB_SETTINGS'] = {
     'db': os.getenv('MONGODB_DB'),
@@ -40,7 +42,21 @@ def index():
     if not auth_token:
         return {}, 401
 
-    entries = FeedPost.objects(userId='abc').order_by('-timestamp')
+    user_id = None;
+    try:
+        jwt_payload = jwt.decode(
+            auth_token.replace('Bearer ', ''),
+            key=app.config.get('jwt_secret_key'),
+            algorithms=['HS256']
+        )
+        user_id = jwt_payload.get('user_id')
+    except ExpiredSignatureError as error:
+        print(f'Unable to decode the token, error: {error}')
+
+    if not user_id:
+        return {}, 401
+
+    entries = FeedPost.objects(userId=user_id).order_by('-timestamp')
     response_entries = []
     for entry in entries:
         response_entries.append({
