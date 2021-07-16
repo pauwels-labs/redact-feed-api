@@ -40,7 +40,7 @@ def index():
     if not auth_token:
         return {}, 401
 
-    user_id = None;
+    user_id = None
     try:
         jwt_payload = jwt.decode(
             auth_token.replace('Bearer ', ''),
@@ -54,7 +54,12 @@ def index():
     if not user_id:
         return {}, 401
 
-    entries = FeedPost.objects(userId=user_id).order_by('-timestamp')
+    skip = request.args.get('skip', default=0, type=int)
+    limit = request.args.get('limit', default=20, type=int)
+    if int(limit) > 20:
+        limit = 20
+
+    entries = FeedPost.objects(userId=user_id).limit(limit).skip(skip).order_by('-timestamp')
     response_entries = []
     for entry in entries:
         response_entries.append({
