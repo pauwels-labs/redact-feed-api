@@ -6,6 +6,7 @@ import uuid
 import jwt
 
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from flask_mongoengine import MongoEngine
 import os
 from OpenSSL import crypto
@@ -16,6 +17,8 @@ import urllib.parse
 from jwt import ExpiredSignatureError
 
 app = Flask(__name__)
+cors = CORS(app, resources={r"/feed/*": {"methods": "OPTIONS, GET, HEAD", "origins": "*", "headers": "Authorization"}})
+
 app.config['MONGODB_SETTINGS'] = {
     'db': os.getenv('MONGODB_DB'),
     'host': os.getenv('MONGODB_HOST'),
@@ -25,6 +28,7 @@ app.config['jwt_secret_key'] = os.getenv('JWT_SECRET_KEY')
 db = MongoEngine()
 db.init_app(app)
 socketio = SocketIO(app)
+
 
 
 class FeedPost(db.Document):
