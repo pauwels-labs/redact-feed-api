@@ -1,4 +1,4 @@
-FROM python:3.10.0b2-alpine3.13 AS builder
+FROM python:3.9.2-alpine3.13 AS builder
 
 COPY src/ src/
 ADD requirements.txt requirements.txt
