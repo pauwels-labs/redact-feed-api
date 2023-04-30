@@ -88,9 +88,9 @@ def redact_relay():
     if not user_cert:
         return {}, 401
 
-    payload_arr = payload.split(';')
+    cert_arr = user_cert.split(';')
     encoded_cert = ""
-    for entry in payload_arr:
+    for entry in cert_arr:
         if entry.startswith("Cert="):
             encoded_cert = entry.split("=")[1][1:-1]
             break
@@ -118,9 +118,9 @@ def redact_session_create():
     if not user_cert:
         return {}, 401
 
-    payload_arr = payload.split(';')
+    cert_arr = user_cert.split(';')
     encoded_cert = ""
-    for entry in payload_arr:
+    for entry in cert_arr:
         if entry.startswith("Cert="):
             encoded_cert = entry.split("=")[1][1:-1]
             break
