@@ -76,14 +76,26 @@ def index():
 
 @app.route("/redact/relay", methods=['POST'])
 def redact_relay():
-    user_cert = request.headers.get("X-Client-Cert")
-    auth_token = request.headers.get("Authorization")
+    # user_cert = request.headers.get("X-Client-Cert")
+    # auth_token = request.headers.get("Authorization")
 
+    # if not user_cert:
+    #     return {}, 401
+
+    # formatted_cert = user_cert.replace('\\n', '\n').replace('\\t', '\t')
+    # formatted_cert = urllib.parse.unquote(formatted_cert)
+    user_cert = request.headers.get("X-Forwarded-Client-Cert")
     if not user_cert:
         return {}, 401
 
-    formatted_cert = user_cert.replace('\\n', '\n').replace('\\t', '\t')
-    formatted_cert = urllib.parse.unquote(formatted_cert)
+    payload_arr = payload.split(';')
+    encoded_cert = ""
+    for entry in payload_arr:
+        if entry.startswith("Cert="):
+            encoded_cert = entry.split("=")[1][1:-1]
+            break
+    formatted_cert = unquote(encoded_cert)
+
     crtObj = crypto.load_certificate(crypto.FILETYPE_PEM, formatted_cert)
     pubKeyObject = crtObj.get_pubkey()
     pubKeyString = crypto.dump_publickey(crypto.FILETYPE_PEM, pubKeyObject)
@@ -102,12 +114,20 @@ def redact_relay():
 
 @app.route("/redact/session_create", methods=['GET'])
 def redact_session_create():
-    user_cert = request.headers.get("X-Client-Cert")
+    user_cert = request.headers.get("X-Forwarded-Client-Cert")
     if not user_cert:
         return {}, 401
 
-    formatted_cert = user_cert.replace('\\n', '\n').replace('\\t', '\t')
-    formatted_cert = urllib.parse.unquote(formatted_cert)
+    payload_arr = payload.split(';')
+    encoded_cert = ""
+    for entry in payload_arr:
+        if entry.startswith("Cert="):
+            encoded_cert = entry.split("=")[1][1:-1]
+            break
+    formatted_cert = unquote(encoded_cert)
+
+    # formatted_cert = user_cert.replace('\\n', '\n').replace('\\t', '\t')
+    # formatted_cert = urllib.parse.unquote(formatted_cert)
 
     crtObj = crypto.load_certificate(crypto.FILETYPE_PEM, formatted_cert)
     pubKeyObject = crtObj.get_pubkey()
