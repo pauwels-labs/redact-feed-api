@@ -12,7 +12,7 @@ import os
 from OpenSSL import crypto
 from hashlib import sha256
 from flask_socketio import SocketIO
-import urllib.parse
+from urllib.parse import unquote
 
 from jwt import ExpiredSignatureError
 
